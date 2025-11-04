@@ -2,6 +2,9 @@
 
 CS315 Project
 Molly Ruley
+Aaron Ybarra
+
+Using sets to implement a leaderboard in C++
 
 *******************************************************************************/
 #include <iostream>
@@ -15,17 +18,23 @@ using namespace std;
 typedef struct Player {
     string name;
     int score;
+    // default constructor
+    Player() : name(""), score(0){}
     // constructor
     Player(string n, int a) : name(n), score(a) {}
 } Player;
 
 typedef struct ComparePlayer{
     //custom comparator to compare players
+    bool operator()(const Player& p1, const Player& p2){
+        return p1.score > p2.score || (p1.score == p2.score && p1.name < p2.name);
+    }
 } comparePlayer;
 
+// function prototypes
 int ErrorChecker(int new_user_input);
-void playGame();
-//void printLeaderboard();
+Player playGame();
+void printLeaderboard(set <Player, comparePlayer> LeaderBoard);
 
 int main()
 {
@@ -42,13 +51,19 @@ int main()
         choice = ErrorChecker(choice);
         switch(choice){
             case(1):{
-                playGame();
+                Player newPlayer;
+                newPlayer = playGame();
+                // if name already exists (strcmp), update score if its better but 
+                // if not, create new player
+                // add new player and score to the set
+                LeaderBoard.insert(newPlayer);
                 cout << "Select play and enter your name to try again, ";
                 cout<< "or play with a new name.\n";
+              
                 break;
             }
             case(2):{
-                //printLeaderboard()
+                printLeaderboard(LeaderBoard);
                 break;
             }
             case(3):{
@@ -80,22 +95,20 @@ int ErrorChecker(int user_input) {
     return new_user_input;
 }
 // function to give player's random scores
-void playGame(){
+Player playGame(){
     int score;
     string name;
     score = 100 + (rand() % (10000 - 100 + 1)); // min score = 100, max = 10000
-    cout <<"Please enter yout name: \n";
+    cout <<"Please enter your name: \n";
     cin >> name;
     cout << "Playing game...\n";
-    printf("Congrats you got a score of %d\n", score);
-    // if name already exists (strcmp), update score if its better but 
-    // if not, create new player
-    // add new player and score to the set
-    //sort by score, highest first
+    cout << "Congrats " <<name << " got a score of " << score << ".\n";
+    return Player(name,score);
 }
 
-/*void printLeaderboard(){
-    for auto in set {
-        printf("%s    %d",name, score);
+void printLeaderboard(set<Player,ComparePlayer> LeaderBoard){
+    cout << "*******LeaderBoard*******\n";
+    for (const auto& player : LeaderBoard) {
+        cout << player.name << " (" << player.score << ")\n";
     }
-}*/
+}
