@@ -2,22 +2,23 @@
 #define LEADERBOARD_H
 
 #include <set>
+#include <string>
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include "Player.h"
 
-// Tracks players and their best scores
+using namespace std;
+
 class Leaderboard {
 private:
-	// Stores players sorted by score and name
-	set<Player> players;
+    set<Player> topScores;         // keeps only the highest unique score per player
+    multiset<Player> allAttempts;  // keeps all scores (duplicates allowed)
 
 public:
-	// Adds or updates a player's score
-	void addOrUpdatePlayer(const Player& p);
-
-	// Displays all player scores
-	void display() const;
+    void addAttempt(const Player& p);                      // adds a new score attempt
+    void display() const;                                  // shows top unique leaderboard
+    void saveAllAttemptsToFile(const string& filename) const;  // saves all scores to file
 };
 
 #endif
