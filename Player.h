@@ -7,8 +7,8 @@ using namespace std;
 // Stores a player's name and score for the game
 class Player {
 private:
-	string name;   
-	int score;    
+	string name;
+	int score;
 
 public:
 	// Constructors
