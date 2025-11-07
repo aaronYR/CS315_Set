@@ -1,36 +1,52 @@
 #include "Leaderboard.h"
 
-using namespace std;
+// Adds a player's attempt and updates their best score if higher
+void Leaderboard::addAttempt(const Player& p) {
+    // Add all attempts to the multiset
+    allAttempts.insert(p);
 
-// Adds a new player or updates their score if higher
-void Leaderboard::addOrUpdatePlayer(const Player& p) {
-    set<Player>::iterator existing = find_if(players.begin(), players.end(),
-        [&](const Player& pl) { return pl.getName() == p.getName(); });
+    // Maintains topScores (unique players) 
+    auto existing = find_if(topScores.begin(), topScores.end(),
+                            [&](const Player& pl) { return pl.getName() == p.getName(); });
 
-    // Update only if new score is higher
-    if (existing != players.end()) {
+    if (existing != topScores.end()) {
         if (p.getScore() > existing->getScore()) {
-            players.erase(existing);
-            players.insert(p);
+            topScores.erase(existing);
+            topScores.insert(p);
         }
     } else {
-        players.insert(p);
+        topScores.insert(p);
     }
 }
 
-
-// Displays all players and scores
+// Displays the current leaderboard with ranked player scores
 void Leaderboard::display() const {
-	cout << "\n******* Leaderboard *******\n";
-	if (players.empty()) {
-		cout << "No scores yet. Play a game first!\n";
-		return;
-	}
+    cout << "\n******* Leaderboard *******\n";
+    if (topScores.empty()) {
+        cout << "No scores yet. Play a game first!\n";
+        return;
+    }
 
-	int rank = 1;
-	for (const auto& player : players) {
-		cout << rank++ << ". " << player.getName()
-		     << " (" << player.getScore() << ")\n";
-	}
-	cout << "***************************\n";
+    int rank = 1;
+    for (const auto& player : topScores) {
+        cout << rank++ << ". " << player.getName()
+             << " (" << player.getScore() << ")\n";
+    }
+    cout << "***************************\n";
+}
+
+// Saves all recorded player attempts to a text file
+void Leaderboard::saveAllAttemptsToFile(const string& filename) const {
+    ofstream out(filename);
+    if (!out.is_open()) {
+        cerr << "Error: Could not open file " << filename << endl;
+        return;
+    }
+
+    out << "All Player Attempts:\n";
+    for (const auto& p : allAttempts) {
+        out << p.getName() << " " << p.getScore() << "\n";
+    }
+
+    out.close();
 }
