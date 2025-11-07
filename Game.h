@@ -1,12 +1,13 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "Leaderboard.h"
-#include <chrono>
-#include <climits>
-#include <cstdlib>
-#include <ctime>
-#include <iostream>
+#include "Leaderboard.h"  
+#include <chrono>          // Used for precise timing (measuring quiz duration)
+#include <climits>         // Provides INT_MAX for input validation limits
+#include <cstdlib>         // Used for rand(), srand()
+#include <iostream>        // Used for cin and cout
+#include <fstream>         // Used for file input/output (saving score data)
+#include <cctype>          // Provides character classification functions (isalpha, isdigit)
 
 using namespace std; 
 
